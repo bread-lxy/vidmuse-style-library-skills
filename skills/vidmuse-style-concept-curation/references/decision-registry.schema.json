@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VidMuse AI-Prepared Concept Decision",
+  "type": "object",
+  "required": [
+    "hypothesisId",
+    "decision",
+    "canonicalHypothesisId",
+    "resultingHypothesisIds",
+    "relations",
+    "reviewStatus",
+    "evidenceActions"
+  ],
+  "properties": {
+    "hypothesisId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "enum": [
+        "advance",
+        "merge",
+        "split",
+        "hold",
+        "reject"
+      ]
+    },
+    "canonicalHypothesisId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resultingHypothesisIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type",
+          "targetHypothesisId",
+          "role"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "parent_child",
+              "related",
+              "alias"
+            ]
+          },
+          "targetHypothesisId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "parent",
+              "child",
+              "peer",
+              "alias_of"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "reviewStatus": {
+      "enum": [
+        "ai_proposed",
+        "human_confirmed",
+        "human_overridden"
+      ]
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidenceActions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action",
+          "evidenceIds",
+          "reason"
+        ],
+        "properties": {
+          "action": {
+            "enum": [
+              "include",
+              "exclude",
+              "move",
+              "relabel"
+            ]
+          },
+          "evidenceIds": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "targetHypothesisId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "reviewStatus": {
+            "const": "human_confirmed"
+          }
+        },
+        "required": [
+          "reviewStatus"
+        ]
+      },
+      "then": {
+        "required": [
+          "reviewer",
+          "reviewedAt"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reviewStatus": {
+            "const": "human_overridden"
+          }
+        },
+        "required": [
+          "reviewStatus"
+        ]
+      },
+      "then": {
+        "required": [
+          "reviewer",
+          "reviewedAt",
+          "notes"
+        ]
+      }
+    }
+  ],
+  "additionalProperties": false
+}

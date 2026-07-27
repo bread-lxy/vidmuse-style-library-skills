@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vidmuse.ai/schemas/style-record.schema.json",
+  "title": "VidMuse Official Style Record",
+  "description": "Structural contract derived from the canonical six-field content standard. Artistic quality remains a human and generation-test decision.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "tags",
+    "description",
+    "analysis",
+    "promptSample",
+    "imageUrl"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\r\\n\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$",
+      "description": "User-readable English name for the verified anchor scope."
+    },
+    "tags": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "description": "Ordered prompt-safe visual fingerprint: modality, style family, signature differences, then optional texture or visible atmosphere.",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[^,;\\r\\n\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$"
+      }
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$",
+      "description": "English selection rationale covering visual identity, applicable project intent, and meaningful neighbor boundary when needed."
+    },
+    "analysis": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$",
+      "description": "English medium-adaptive analysis of evidence-supported visual mechanisms, transfer, motion where available, and failure boundaries."
+    },
+    "promptSample": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\r\\n\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$",
+      "description": "Pure style shell. It may repeat the name or anchor in its first phrase, followed by coordinated transferable visual controls."
+    },
+    "imageUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "description": "Public HTTPS URL of the approved original preview image."
+    }
+  }
+}

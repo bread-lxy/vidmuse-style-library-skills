@@ -1,0 +1,4 @@
+interface:
+  display_name: "VidMuse 风格概念策展"
+  short_description: "从证据中验证 Anchor、风格边界与人工决策。"
+  default_prompt: "Use $vidmuse-style-concept-curation to cluster approved evidence and prepare human-reviewable style boundaries."

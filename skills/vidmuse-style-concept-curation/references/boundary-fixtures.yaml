@@ -1,0 +1,50 @@
+schemaVersion: 1.0
+fixtures:
+  - id: R01
+    input: same_creator_metadata_with_two_source_hidden_clusters
+    assertion: creator_metadata_must_link
+    expected: false
+  - id: R02
+    input: still_only_evidence_with_camera_movement_or_editing_claim
+    assertion: invariant_allowed_in_v1_signature
+    expected: false
+  - id: R03
+    input: candidate_identity_not_established_by_static_evidence
+    assertion: admitted_to_v1_clustering
+    expected: false
+  - id: R04
+    input: required_content_unknown_or_incompatible
+    assertion: primary_recommendation_allowed
+    expected: false
+  - id: R05
+    input: same_recipe_and_q3_below_threshold
+    assertion: parallel_active_leaf_allowed
+    expected: false
+  - id: R06
+    input: one_swappable_trait_is_only_difference
+    assertion: independent_leaf_split
+    expected: false
+  - id: R07
+    input: famous_label_with_q1_or_q2_failure
+    assertion: concept_validated
+    expected: false
+  - id: R08
+    input: retrieval_only_mood_and_usage_tags
+    assertion: automatic_generation_tag_projection
+    expected: false
+  - id: R09
+    input: twenty_views_of_one_building
+    assertion: independent_evidence_unit_count
+    expected: 1
+  - id: R10
+    input: cross_media_claim_with_one_medium_without_holdout
+    assertion: cross_media_validated
+    expected: false
+  - id: R11
+    input: active_record_with_q3_not_passed
+    assertion: schema_and_lint_accept
+    expected: false
+  - id: R12
+    input: backend_active_count_exceeds_summary_visible_count
+    assertion: activation_gate_pass
+    expected: false

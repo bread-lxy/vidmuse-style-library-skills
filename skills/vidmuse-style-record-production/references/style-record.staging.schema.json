@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vidmuse.ai/schemas/style-record.staging.schema.json",
+  "title": "VidMuse Staging Style Record",
+  "description": "Six-field staging contract. imageUrl remains empty until a preview is uploaded.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "tags",
+    "description",
+    "analysis",
+    "promptSample",
+    "imageUrl"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\r\\n\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$"
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[^,;\\r\\n\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$"
+      },
+      "minItems": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$"
+    },
+    "analysis": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$"
+    },
+    "promptSample": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^\\r\\n\\u4E00-\\u9FFF\\u3400-\\u4DBF]+$"
+    },
+    "imageUrl": {
+      "const": ""
+    }
+  }
+}

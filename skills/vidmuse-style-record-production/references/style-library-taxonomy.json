@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "2026-07-27-cross-source",
+  "definition": "A VidMuse style is an anchored, transferable, user-perceivable, agent-retrievable, model-executable visual recipe.",
+  "canonical_standard": "style-library-field-standard.zh-CN.md",
+  "principles": {
+    "anchor_principle": [
+      "Every style has one concrete primary anchor.",
+      "Reject broad mood-only labels unless bound to a stable public style identity."
+    ],
+    "single_source_rule": [
+      "Use one primary anchor by default.",
+      "Allow fusion only when the fusion itself has stable visual grammar and user intent."
+    ],
+    "transferability_rule": [
+      "The style survives multiple comparable content changes within its declared scope.",
+      "Characters, plots, props, source frames, and iconic scenes are evidence rather than style content."
+    ],
+    "purity_rule": [
+      "Production fields contain style information only.",
+      "Exclude model controls, quality filler, source notes, content prompts, and generation commands."
+    ]
+  },
+  "anchor_types": [
+    "director",
+    "cinematographer",
+    "photographer",
+    "artist",
+    "film",
+    "series",
+    "music_video",
+    "artwork",
+    "illustrator",
+    "animator",
+    "architect",
+    "designer",
+    "anime",
+    "game",
+    "IP",
+    "studio",
+    "movement",
+    "subculture",
+    "medium",
+    "technique"
+  ],
+  "visual_form_vocabulary": {
+    "Live-Action Cinematography": ["Cinematic Photography", "Cinematic Film", "Film Still Style", "Cinematic Film Still", "Cinematic Still"],
+    "Photography": ["Film Photography", "Analog Photography", "Documentary Photography", "Landscape Photography", "Natural Light Photography", "Narrative Photography", "Scientific Photography", "Sci-Fi Photography"],
+    "Painting & Drawing": ["Fine Art Painting", "Oil Painting", "Digital Painting", "Poster Color Painting"],
+    "2D Illustration": ["Flat Illustration", "Digital 2D"],
+    "2D Animation": ["Anime", "Anime Style"],
+    "3D Render": ["3D Environment"],
+    "Stop-Motion": ["Stop Motion", "Claymation"],
+    "Graphic Design": [],
+    "Mixed Media": ["Digital Collage", "Mixed Media Collage"],
+    "Spatial/Architectural": ["Architectural Design", "Spatial Design"],
+    "Analog/Postprocess": ["Film Grain", "35mm Film"]
+  },
+  "modality_branches": {
+    "Live-Action Cinematography": ["cinema", "music video", "commercial", "documentary"],
+    "Photography": ["commercial photography", "documentary", "street photography", "portrait", "film", "CCD", "MiniDV"],
+    "Painting & Drawing": ["oil painting", "watercolor", "ink", "pencil", "charcoal", "printmaking"],
+    "2D Illustration": ["comic", "manga", "picture book", "editorial illustration"],
+    "2D Animation": ["anime", "cel animation", "cutout animation"],
+    "3D Render": ["photoreal 3D", "stylized 3D", "low-poly", "toon render", "game environment"],
+    "Stop-Motion": ["claymation", "puppet animation", "object animation"],
+    "Graphic Design": ["poster", "editorial layout", "typographic system", "motion-graphic frame"],
+    "Mixed Media": ["photo plus drawing", "scrapbook", "collage", "OSD overlay", "UI overlay"],
+    "Spatial/Architectural": ["architecture", "interior", "installation", "landscape"],
+    "Analog/Postprocess": ["VHS", "glitch", "datamosh", "chromatic aberration", "scan lines", "film damage"]
+  },
+  "analysis_dimensions": {
+    "Live-Action Cinematography": ["lens and image formation", "color and exposure", "lighting logic", "composition and space", "optical and post-process finish"],
+    "Photography": ["photographic process", "composition", "tonality", "lighting", "optics and surface finish"],
+    "Painting & Drawing": ["mark-making", "line and shape", "pigment or paper", "color relationships", "pictorial space"],
+    "2D Illustration": ["line", "shape abstraction", "color relationships", "planar depth", "drawn surface"],
+    "2D Animation": ["line", "deformation", "color", "planar depth", "drawn surface"],
+    "3D Render": ["modeling and proportion", "shape simplification", "material response", "rendering", "spatial organization"],
+    "Stop-Motion": ["construction", "form and proportion", "material surface", "staging", "frame appearance"],
+    "Graphic Design": ["layout", "graphic shape", "type relationship", "color system", "print or digital surface"],
+    "Mixed Media": ["layer structure", "medium edges", "graphic elements", "compositing logic", "material relationships"],
+    "Spatial/Architectural": ["massing", "geometry", "material", "scale", "spatial rhythm and light"],
+    "Analog/Postprocess": ["recording or transfer process", "signal artifacts", "color response", "surface damage", "layer interaction"]
+  },
+  "production_field_contract": {
+    "language": "English",
+    "name": {"language": "English", "identity": "verified user-readable anchor scope"},
+    "tags": {"min_items": 5, "max_items": 8, "order": ["visual modality", "style family", "signature differences", "optional texture or visible atmosphere"], "first_item_equals_name": false},
+    "description": {"content": ["visual identity", "applicable project and user intent", "meaningful neighbor boundary when needed"]},
+    "analysis": {"structure": "medium-adaptive", "dimensions": "use relevant entries from analysis_dimensions without a fixed heading contract"},
+    "promptSample": {"content": "transferable coordinated style shell", "anchor": "may repeat name in the first phrase", "content_rule": "exclude project-specific content; allow only generic motifs approved as necessary to a content-dependent style"},
+    "imageUrl": {"scheme": "https", "content": "approved original preview image"}
+  },
+  "mv_matching": {
+    "usage_type": ["Story MV", "Concept MV", "Performance MV", "Lyric Video", "Visualizer", "Shorts", "TVC", "Narrative Film", "Album Visual", "Social Reel"],
+    "audio_emotion": ["Nostalgic", "Energetic", "Melancholic", "Eerie", "Romantic", "Dreamy", "Aggressive", "Tender", "Euphoric", "Calm", "Intense", "Playful"],
+    "edit_pace": ["Slow", "Long Take", "Snappy", "Beat-Synced", "Glitchy", "Static", "Floating", "Rhythmic", "Fast", "Lingering", "Stutter", "Smooth"]
+  },
+  "prompt_sample": {
+    "focus_order": ["anchor identity when useful", "visual form", "signature differences", "medium-appropriate controls", "texture and finish", "visible atmosphere"],
+    "banned_by_default": ["model names and adapters", "quality filler", "weight syntax", "resolution and aspect ratio", "negative instructions", "generation commands", "source metadata", "unapproved project-specific subjects or plot actions", "source-specific scenes", "placeholders", "Chinese punctuation"]
+  },
+  "qa_gates": [
+    "anchor_gate",
+    "distinctiveness_gate",
+    "transferability_gate",
+    "mv_fit_gate",
+    "prompt_executability_gate",
+    "cleanliness_gate",
+    "preview_gate",
+    "legal_source_gate"
+  ],
+  "test_scenario_policy": {
+    "neighbor_comparison": "Use the same comparable content inside both styles' declared scope.",
+    "transfer": "Vary multiple contents inside the target style's declared scope.",
+    "content_dependent": "Retain only the generic motifs necessary for the approved style identity."
+  }
+}

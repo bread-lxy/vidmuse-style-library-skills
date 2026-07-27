@@ -1,0 +1,4 @@
+interface:
+  display_name: "VidMuse 风格素材采集"
+  short_description: "调研并采集视觉素材，转换为可追溯的风格证据库。"
+  default_prompt: "Use $vidmuse-style-source-mining to research a visual source and build an approved EvidenceRecord library."

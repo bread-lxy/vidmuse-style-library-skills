@@ -1,0 +1,46 @@
+{
+  "sourceName": "example-source",
+  "fields": {
+    "id": "id",
+    "source": "url",
+    "localAssetPath": "local_path",
+    "unitType": "unit_type",
+    "medium": "medium",
+    "sourceGroupKey": "collection_id",
+    "contextKey": "context_id",
+    "independenceKey": "item_id",
+    "licenseStatus": "license_status"
+  },
+  "defaults": {
+    "unitType": "photograph",
+    "medium": "photography",
+    "licenseStatus": "research_only",
+    "researchOnly": true,
+    "evidenceCapabilities": ["static_appearance"]
+  },
+  "styleFields": {
+    "color_tonality": "visual.color",
+    "lighting_shadow": "visual.lighting",
+    "composition_spatial": "visual.composition",
+    "material_texture": "visual.texture"
+  },
+  "contentFields": {
+    "subjects": "content.subjects",
+    "locations": "content.locations",
+    "actions": "content.actions"
+  },
+  "provenanceFields": {
+    "title": "title",
+    "creator": "creator",
+    "collection": "collection",
+    "queries": "queries",
+    "collectedAt": "collected_at"
+  },
+  "anchorMembershipFields": [
+    {
+      "anchorType": "artist",
+      "anchorNameField": "creator",
+      "basis": "source_metadata"
+    }
+  ]
+}

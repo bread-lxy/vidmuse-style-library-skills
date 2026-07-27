@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VidMuse Anonymous Visual Candidate",
+  "type": "object",
+  "required": [
+    "anonymousCandidateId",
+    "anonymousLabel",
+    "sealedRangeRefs",
+    "signature",
+    "evidence",
+    "candidateNeighbors",
+    "uncertainty"
+  ],
+  "properties": {
+    "anonymousCandidateId": {
+      "type": "string",
+      "pattern": "^anon-[A-Za-z0-9_-]+$"
+    },
+    "anonymousLabel": {
+      "type": "string",
+      "pattern": "^Cluster [0-9]{4,}$"
+    },
+    "sealedRangeRefs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^range-[A-Za-z0-9_-]+$"
+      }
+    },
+    "signature": {
+      "$ref": "#/$defs/signature"
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "memberEvidenceIds",
+        "holdoutEvidenceIds"
+      ],
+      "properties": {
+        "memberEvidenceIds": {
+          "$ref": "#/$defs/idList"
+        },
+        "holdoutEvidenceIds": {
+          "$ref": "#/$defs/idList"
+        }
+      },
+      "additionalProperties": false
+    },
+    "candidateNeighbors": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^anon-[A-Za-z0-9_-]+$"
+      }
+    },
+    "uncertainty": {
+      "type": "object",
+      "required": [
+        "level",
+        "reason"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "idList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "invariant": {
+      "type": "object",
+      "required": [
+        "dimension",
+        "rule",
+        "evidenceIds"
+      ],
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceIds": {
+          "$ref": "#/$defs/idList"
+        }
+      },
+      "additionalProperties": false
+    },
+    "signature": {
+      "type": "object",
+      "required": [
+        "summary",
+        "transferableInvariants",
+        "allowedVariation",
+        "excludedSourceMotifs"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transferableInvariants": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/invariant"
+          }
+        },
+        "allowedVariation": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "excludedSourceMotifs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

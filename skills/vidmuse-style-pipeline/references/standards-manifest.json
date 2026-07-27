@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-27T09:21:44Z",
+  "scope": "self-contained-skill-bundle",
+  "entries": [
+    {
+      "id": "clustering-rules",
+      "path": "vidmuse-style-concept-curation/references/style-clustering-rules.zh-CN.md",
+      "sha256": "2e9dd2cc9816d78c9df735d6d2a587155fdf8dd0c55f54ac03ae69dcd55d80ca",
+      "bytes": 11386
+    },
+    {
+      "id": "field-standard",
+      "path": "vidmuse-style-record-production/references/style-library-field-standard.zh-CN.md",
+      "sha256": "3100a0a8e1dbf7799d5927278df00db79ac4f63b8185946aaabd2933cb8f2261",
+      "bytes": 27231
+    },
+    {
+      "id": "decision-log",
+      "path": "vidmuse-style-pipeline/references/decision-log.md",
+      "sha256": "0a8a237770efec449351e65d28fa42b3160cbe264ca406536dcc0821975b2a93",
+      "bytes": 17540
+    },
+    {
+      "id": "style-record-schema",
+      "path": "vidmuse-style-record-production/references/style-record.schema.json",
+      "sha256": "413e52098003788cf17dfd2a264a2628cff5529db8e4a08152f4b9c93bea7bba",
+      "bytes": 2174
+    },
+    {
+      "id": "style-record-validator",
+      "path": "vidmuse-style-record-production/scripts/validate_style_record.py",
+      "sha256": "02c51211ef933640060d1b10ec2389d9e19a51b8c14d9cc8eb7b06f8aa95ccec",
+      "bytes": 20935
+    },
+    {
+      "id": "style-taxonomy",
+      "path": "vidmuse-style-record-production/references/style-library-taxonomy.json",
+      "sha256": "428a9ea165eb8ba00c895e8fa909e79dcf9aeaae29fbd91881effb2b7dfd8ced",
+      "bytes": 7244
+    },
+    {
+      "id": "boundary-fixtures",
+      "path": "vidmuse-style-concept-curation/references/boundary-fixtures.yaml",
+      "sha256": "f1e529549599591f6a8e5ee1db0d4078754a0ef53945003c886e2c1c6c2cd5ed",
+      "bytes": 1557
+    },
+    {
+      "id": "duplicate-review",
+      "path": "vidmuse-style-concept-curation/references/duplicate-high-affinity-review.zh-CN.md",
+      "sha256": "555cedfaead8d1e99ec766af3393b59c4c2cccdd4b32fd155c273bf6eb313af6",
+      "bytes": 22315
+    }
+  ]
+}
