@@ -1,6 +1,6 @@
 ---
 name: vidmuse-style-record-production
-description: Convert approved VidMuse style concepts into the official six fields by following the complete canonical field standard, validate Planner and generation behavior, compile one original reference-image prompt per style, generate and package one final image, and export staging JSON/CSV with an empty imageUrl. Use after concept-stage approval or when rebuilding product records and previews without changing the underlying style concept.
+description: Convert approved VidMuse style concepts into the official six fields by following the complete canonical field standard, validate Planner and generation behavior, compile and package one final reference image per style, then upload the approved previews and produce a verified imageUrl-complete JSON/CSV delivery. Use after concept-stage approval or when rebuilding product records, previews, or URL-complete delivery files without changing the underlying style concept.
 ---
 
 # VidMuse Style Record Production
@@ -9,7 +9,7 @@ Write product fields from approved visual evidence and boundaries. Do not use wo
 
 ## Required Reading
 
-Read the complete [style-library-field-standard.zh-CN.md](references/style-library-field-standard.zh-CN.md) in the current task before drafting any record. It is the content authority; this Skill summary, the schema, validator, authoring prompt, and examples cannot substitute for it. Then read [product-consumption.md](references/product-consumption.md) and [preview-generation.md](references/preview-generation.md). Use [record-authoring-prompt.md](references/record-authoring-prompt.md) for batch drafting only together with the full standard, and [quality-example.md](references/quality-example.md) only as a field-separation example.
+Read the complete [style-library-field-standard.zh-CN.md](references/style-library-field-standard.zh-CN.md) in the current task before drafting any record. It is the content authority; this Skill summary, the schema, validator, authoring prompt, and examples cannot substitute for it. Then read [product-consumption.md](references/product-consumption.md) and [preview-generation.md](references/preview-generation.md). Use [record-authoring-prompt.md](references/record-authoring-prompt.md) for batch drafting only together with the full standard, and [quality-example.md](references/quality-example.md) only as a field-separation example. Before starting the final URL-backfill stage, also read [image-url-backfill.md](references/image-url-backfill.md) before uploading anything.
 
 ## 1. Confirm The Concept
 
@@ -90,4 +90,29 @@ python scripts/package_previews.py `
   --strict
 ```
 
-Deliver the complete directory and the review reports. Do not upload, fill URLs, or write the admin.
+Deliver the approved `preview-export` directory and review reports with
+`imageUrl` still empty. This frozen staging package is the input to the formal
+sixth stage. Never write the admin from this Skill.
+
+## 7. Upload And Backfill Image URLs
+
+Run this formal next stage only after the one-image-per-style package is
+approved. Follow `image-url-backfill.md` exactly.
+
+- Use the dev CLI config and create a VidMuse thread with
+  `--plugin-id Evals-bread-img`.
+- Upload one final preview per manifest row in stable order, with queue-aware
+  throttling.
+- Make the Planner copy each upload to the physical
+  `workspace/assets/images/` directory and return an ordered mapping.
+- Verify each CDN URL independently. Local file existence is not URL proof.
+- Run `scripts/backfill_image_urls.py` to join by exact `styleIndex`, `name`,
+  and `fileName`.
+- Save the Planner response as `06-url-backfill/planner-image-url-map.json`, then write the normalized result to the same stage directory; do not
+  mutate the approved preview-export package.
+
+The backfill output contains URL-complete six-field `styles.json` and
+`styles.csv`, the raw Planner URL map, the normalized URL map, and the
+network-validation report. Run production record validation with image checks,
+then submit the complete `06-url-backfill/` package for sixth-stage approval.
+This stage still does not create styles or write the admin.

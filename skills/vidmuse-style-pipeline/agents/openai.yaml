@@ -1,4 +1,4 @@
 interface:
   display_name: "VidMuse 风格流程总控"
-  short_description: "分阶段管理来源、证据、概念、字段与参考图交付。"
-  default_prompt: "Use $vidmuse-style-pipeline to start or resume a gated VidMuse style-library production run."
+  short_description: "分六阶段管理证据、风格、参考图及 URL 完整交付。"
+  default_prompt: "Use $vidmuse-style-pipeline to start or resume a six-stage VidMuse style-library run through verified URL-complete delivery."

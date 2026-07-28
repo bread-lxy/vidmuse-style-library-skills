@@ -1,16 +1,16 @@
 # VidMuse 六字段与参考图生产（中文审核版）
 <!-- source: SKILL.md -->
-<!-- source_sha256: 1287780181aa4ff8876210a8ae02ca7fb74f1a50df2bc3758df44e503bc60b19 -->
+<!-- source_sha256: d17b96984b8da3d0722dd22b36636bce4c3d231ceab76fb80bb286f9b4cd235b -->
 
 > 本文件用于中文审核和修改意见收集。运行时以英文主文件 `SKILL.md` 为准；收到中文意见后，先修改英文版，再同步更新本文件及源文件哈希。
 
 ## 用途
 
-把已批准的 VidMuse 风格概念按完整权威字段规范转换为后台六字段，验证 Planner 与生成行为，为每条风格编译一个原创参考图 Prompt、生成并打包一张最终图片，并导出 `imageUrl` 为空的 staging JSON/CSV。只从已批准的视觉证据和边界写字段，不能用文案拯救无效概念。
+把已批准的 VidMuse 风格概念按完整权威字段规范转换为后台六字段，验证 Planner 与生成行为，为每条风格编译并打包一张最终参考图；随后上传已批准的参考图，形成经验证、`imageUrl` 完整的最终 JSON/CSV。只从已批准的视觉证据和边界写字段，不能用文案拯救无效概念。
 
 ## 必读资料
 
-在当前任务中，起草任何记录前必须完整阅读 [style-library-field-standard.zh-CN.md](references/style-library-field-standard.zh-CN.md)。它是内容权威；本 Skill 摘要、Schema、校验器、批量 Prompt 和示例都不能替代它。随后阅读 [product-consumption.md](references/product-consumption.md) 和 [preview-generation.md](references/preview-generation.md)。批量起草使用 [record-authoring-prompt.md](references/record-authoring-prompt.md) 时必须同时使用完整规范；[quality-example.md](references/quality-example.md) 只用于理解字段职责分离。
+在当前任务中，起草任何记录前必须完整阅读 [style-library-field-standard.zh-CN.md](references/style-library-field-standard.zh-CN.md)。它是内容权威；本 Skill 摘要、Schema、校验器、批量 Prompt 和示例都不能替代它。随后阅读 [product-consumption.md](references/product-consumption.md) 和 [preview-generation.md](references/preview-generation.md)。批量起草使用 [record-authoring-prompt.md](references/record-authoring-prompt.md) 时必须同时使用完整规范；[quality-example.md](references/quality-example.md) 只用于理解字段职责分离。开始最终 URL 回填阶段前，上传任何文件前还必须阅读 [image-url-backfill.md](references/image-url-backfill.md)。
 
 ## 1. 确认概念
 
@@ -91,4 +91,17 @@ python scripts/package_previews.py `
   --strict
 ```
 
-交付完整目录和审核报告。不得上传、填写 URL 或写入后台。
+交付已批准的 `preview-export` 目录和审核报告，其中 `imageUrl` 仍保持为空。这个冻结的 staging 包是正式第六阶段的输入。本 Skill 不写入后台。
+
+## 7. 上传并回填图片 URL
+
+每条风格一张图的交付包获批后，执行这个正式的下一阶段。必须完整遵循 `image-url-backfill.md`。
+
+- 显式使用 dev CLI 配置，并通过 `--plugin-id Evals-bread-img` 创建 VidMuse 线程。
+- 按 manifest 稳定顺序上传每条风格唯一的最终参考图，并根据线程队列状态节流。
+- 要求 Planner 把每个附件复制到真实的 `workspace/assets/images/` 目录，并返回有序映射。
+- 独立验证每个 CDN URL；本地文件存在不能证明 URL 可用。
+- 运行 `scripts/backfill_image_urls.py`，按精确的 `styleIndex`、`name` 和 `fileName` 三重对应关系回填。
+- 把 Planner 原始响应保存为 `06-url-backfill/planner-image-url-map.json`，再把标准化结果写入同一阶段目录；不改写已批准的 preview-export 交付包。
+
+回填交付包含 `imageUrl` 完整的六字段 `styles.json` 和 `styles.csv`、Planner 原始 URL 映射、标准化 URL 映射和网络校验报告。随后运行带图片检查的生产记录校验，并把完整的 `06-url-backfill/` 提交第六阶段批准。该步骤仍不创建风格，也不写入后台。
