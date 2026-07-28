@@ -1,4 +1,4 @@
 interface:
   display_name: "VidMuse 风格字段生产"
-  short_description: "把确认风格转成六字段、参考图任务与标准导出。"
-  default_prompt: "Use $vidmuse-style-record-production to create standards-compliant six-field records and a one-reference-image delivery package."
+  short_description: "把确认风格转成六字段、参考图及 URL 完整交付。"
+  default_prompt: "Use $vidmuse-style-record-production to create standards-compliant records, one final reference image per style, and the verified imageUrl-complete delivery."

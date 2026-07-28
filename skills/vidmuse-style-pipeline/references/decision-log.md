@@ -210,3 +210,13 @@ This file records decisions that constrain `docs/style-clustering-standard.md` a
   - Use an extensible canonical visual-form vocabulary. Known aliases must normalize to the canonical term; plausible new forms and content-dependent generic motifs require human review instead of automatic rejection.
 - Consequence: ShotDeck remains a valid film-source adapter, but film fields, still-image assumptions, and cinematography assumptions do not define the reusable contract. Deterministic prompt pollution remains a hard error; open taxonomy and scoped content judgments remain review decisions.
 - Artifacts: `docs/style-clustering-rules.zh-CN.md`, `docs/style-library-field-standard.zh-CN.md`, `style-library-schema-taxonomy/style-library-taxonomy.json`, and the four reusable VidMuse style Skills.
+## D-028: Make verified image URL backfill the formal sixth stage
+
+- Status: accepted by product owner and implemented on 2026-07-28
+- Decision:
+  - `preview-export` remains the immutable staging delivery. It contains exactly one approved original preview per style and keeps every `imageUrl` empty.
+  - `url-backfill` is the formal next stage. It uploads only those approved previews to the VidMuse dev environment through the `Evals-bread-img` plugin, preserves the Planner's ordered raw map, and writes a separate URL-complete six-field delivery.
+  - Exact `styleIndex` / `name` / `fileName` alignment, external HTTPS image validation, production record validation with image checks, and lossless JSON/CSV round-trip are required before stage approval.
+  - Pipeline manifest schema version 2 contains six stages. Version 1 five-stage manifests remain readable and gain a non-destructive `url-backfill` stage view; prior approvals and artifacts are preserved.
+- Consequence: a run is complete only when all six stages are approved and drift-free. Reopening any upstream stage invalidates the URL-backfill approval together with other downstream approvals.
+- Scope: this stage does not create styles, write the admin, modify the plugin, or overwrite the approved stage-05 package.

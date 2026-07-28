@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "clustering-rules",
+      "authority": "human",
+      "sourcePath": "docs/style-clustering-rules.zh-CN.md",
+      "bundlePath": "vidmuse-style-concept-curation/references/style-clustering-rules.zh-CN.md"
+    },
+    {
+      "id": "field-standard",
+      "authority": "human",
+      "sourcePath": "docs/style-library-field-standard.zh-CN.md",
+      "bundlePath": "vidmuse-style-record-production/references/style-library-field-standard.zh-CN.md",
+      "derived": true,
+      "transform": "Rebased internal links for the self-contained Skill bundle; content semantics unchanged."
+    },
+    {
+      "id": "decision-log",
+      "authority": "human",
+      "sourcePath": "decisions/decision-log.md",
+      "bundlePath": "vidmuse-style-pipeline/references/decision-log.md",
+      "sections": [
+        "D-024",
+        "D-025",
+        "D-026",
+        "D-027",
+        "D-028"
+      ],
+      "derived": true,
+      "transform": "Rebased the active clustering-rules link for the installed sibling Skill; decision text unchanged."
+    },
+    {
+      "id": "admin-snapshot",
+      "authority": "product_fact",
+      "sourcePath": "官方风格库管理 - Vidmuse Admin.html"
+    },
+    {
+      "id": "plugin-style-selector",
+      "authority": "product_fact",
+      "sourcePath": "vidmuse-plugins/general-bj-en-test-b-0707/skills/select-visual-style/SKILL.md"
+    },
+    {
+      "id": "plugin-t2i-compiler",
+      "authority": "product_fact",
+      "sourcePath": "vidmuse-plugins/general-bj-en-test-b-0707/skills/compile-prompt/references/modality-t2i.md"
+    },
+    {
+      "id": "plugin-t2v-compiler",
+      "authority": "product_fact",
+      "sourcePath": "vidmuse-plugins/general-bj-en-test-b-0707/skills/compile-prompt/references/modality-t2v.md"
+    },
+    {
+      "id": "style-record-schema",
+      "authority": "machine_reference",
+      "sourcePath": "style-library-schema-taxonomy/style-record.schema.json",
+      "bundlePath": "vidmuse-style-record-production/references/style-record.schema.json"
+    },
+    {
+      "id": "style-record-validator",
+      "authority": "machine_reference",
+      "sourcePath": "style-library-schema-taxonomy/validate_style_record.py",
+      "bundlePath": "vidmuse-style-record-production/scripts/validate_style_record.py",
+      "derived": true
+    },
+    {
+      "id": "style-taxonomy",
+      "authority": "machine_reference",
+      "sourcePath": "style-library-schema-taxonomy/style-library-taxonomy.json",
+      "bundlePath": "vidmuse-style-record-production/references/style-library-taxonomy.json",
+      "derived": true,
+      "transform": "Rebased internal links for the self-contained Skill bundle; content semantics unchanged."
+    },
+    {
+      "id": "boundary-fixtures",
+      "authority": "regression_evidence",
+      "sourcePath": "evaluation/boundary-fixtures.yaml",
+      "bundlePath": "vidmuse-style-concept-curation/references/boundary-fixtures.yaml"
+    },
+    {
+      "id": "duplicate-review",
+      "authority": "execution_evidence",
+      "sourcePath": "docs/style-library-duplicate-high-affinity-retention-review.zh-CN.md",
+      "bundlePath": "vidmuse-style-concept-curation/references/duplicate-high-affinity-review.zh-CN.md"
+    }
+  ]
+}

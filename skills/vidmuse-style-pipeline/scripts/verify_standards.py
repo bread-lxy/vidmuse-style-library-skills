@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build or verify the self-contained VidMuse Skill standards manifest."""
+"""Build or verify the VidMuse standards provenance manifest."""
 
 from __future__ import annotations
 
@@ -9,22 +9,13 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Sequence
+from typing import Any, Sequence
 
 
 ROOT = Path(__file__).resolve().parent.parent
 SUITE_ROOT = ROOT.parent
+CONFIG_PATH = ROOT / "references" / "standards-sources.json"
 MANIFEST_PATH = ROOT / "references" / "standards-manifest.json"
-BUNDLED_REFERENCES = (
-    ("clustering-rules", "vidmuse-style-concept-curation/references/style-clustering-rules.zh-CN.md"),
-    ("field-standard", "vidmuse-style-record-production/references/style-library-field-standard.zh-CN.md"),
-    ("decision-log", "vidmuse-style-pipeline/references/decision-log.md"),
-    ("style-record-schema", "vidmuse-style-record-production/references/style-record.schema.json"),
-    ("style-record-validator", "vidmuse-style-record-production/scripts/validate_style_record.py"),
-    ("style-taxonomy", "vidmuse-style-record-production/references/style-library-taxonomy.json"),
-    ("boundary-fixtures", "vidmuse-style-concept-curation/references/boundary-fixtures.yaml"),
-    ("duplicate-review", "vidmuse-style-concept-curation/references/duplicate-high-affinity-review.zh-CN.md"),
-)
 
 
 def sha256(path: Path) -> str:
@@ -35,65 +26,86 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def refresh() -> int:
+def load_json(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def refresh(workspace_root: Path) -> int:
+    config = load_json(CONFIG_PATH)
     entries = []
-    missing = []
-    for identifier, relative_path in BUNDLED_REFERENCES:
-        path = SUITE_ROOT / relative_path
-        if not path.is_file():
-            missing.append(relative_path)
+    failures = []
+    for item in config["entries"]:
+        source = workspace_root / item["sourcePath"]
+        if not source.is_file():
+            failures.append(f"missing source: {item['sourcePath']}")
             continue
-        entries.append({
-            "id": identifier,
-            "path": relative_path,
-            "sha256": sha256(path),
-            "bytes": path.stat().st_size,
-        })
-    if missing:
-        for relative_path in missing:
-            print(f"ERROR: missing bundled reference: {relative_path}", file=sys.stderr)
+        result = dict(item)
+        result["sourceSha256"] = sha256(source)
+        result["sourceBytes"] = source.stat().st_size
+        if item.get("bundlePath"):
+            bundled = SUITE_ROOT / item["bundlePath"]
+            if not bundled.is_file():
+                failures.append(f"missing bundle: {item['bundlePath']}")
+                continue
+            result["bundleSha256"] = sha256(bundled)
+            result["bundleBytes"] = bundled.stat().st_size
+            if result["sourceSha256"] != result["bundleSha256"] and not item.get("derived"):
+                failures.append(f"bundle drift: {item['id']}")
+        entries.append(result)
+    if failures:
+        for failure in failures:
+            print(f"ERROR: {failure}", file=sys.stderr)
         return 1
     payload = {
         "schemaVersion": 1,
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
-        "scope": "self-contained-skill-bundle",
+        "workspaceRoot": str(workspace_root.resolve()),
         "entries": entries,
+        "historicalExclusions": [
+            "first-stage 284 field-shape candidates",
+            "Phase 2 six legacy examples",
+            "model filler and fixed aspect-ratio prompt rules",
+            "Midterm text conflicting with the current human standard"
+        ]
     }
     MANIFEST_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"wrote {MANIFEST_PATH} ({len(entries)} entries)")
     return 0
 
 
-def check() -> int:
+def check(workspace_root: Path | None) -> int:
     try:
-        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8-sig"))
+        manifest = load_json(MANIFEST_PATH)
     except FileNotFoundError:
         print("ERROR: standards-manifest.json is missing; run refresh", file=sys.stderr)
         return 1
-    except json.JSONDecodeError as exc:
-        print(f"ERROR: invalid standards manifest: {exc}", file=sys.stderr)
-        return 1
     failures = []
-    for item in manifest.get("entries", []):
-        relative_path = item.get("path")
-        path = SUITE_ROOT / relative_path if isinstance(relative_path, str) else None
-        if path is None or not path.is_file():
-            failures.append(f"missing bundled reference: {relative_path}")
-        elif sha256(path) != item.get("sha256"):
-            failures.append(f"bundled reference drift: {item.get('id', relative_path)}")
+    for item in manifest["entries"]:
+        if item.get("bundlePath"):
+            bundled = SUITE_ROOT / item["bundlePath"]
+            if not bundled.is_file() or sha256(bundled) != item.get("bundleSha256"):
+                failures.append(f"bundled reference drift: {item['id']}")
+        if workspace_root:
+            source = workspace_root / item["sourcePath"]
+            if not source.is_file() or sha256(source) != item.get("sourceSha256"):
+                failures.append(f"workspace source drift: {item['id']}")
     if failures:
         for failure in failures:
             print(f"ERROR: {failure}", file=sys.stderr)
         return 1
-    print(f"PASS standards={len(manifest.get('entries', []))}")
+    print(f"PASS standards={len(manifest['entries'])} workspaceChecked={str(bool(workspace_root)).lower()}")
     return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Build or verify bundled VidMuse standards")
-    parser.add_argument("command", choices=("refresh", "check"))
+    parser = argparse.ArgumentParser(description="Build or verify the VidMuse standards manifest")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+    refresh_parser = subparsers.add_parser("refresh")
+    refresh_parser.add_argument("--workspace-root", type=Path, required=True)
+    check_parser = subparsers.add_parser("check")
+    check_parser.add_argument("--workspace-root", type=Path)
     args = parser.parse_args(argv)
-    return refresh() if args.command == "refresh" else check()
+    return refresh(args.workspace_root.resolve()) if args.command == "refresh" else check(args.workspace_root.resolve() if args.workspace_root else None)
 
 
 if __name__ == "__main__":

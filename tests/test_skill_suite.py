@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import contextlib
 import csv
 import importlib.util
+import io
 import json
 import re
 import subprocess
@@ -38,6 +40,7 @@ review_builder = load_module("vidmuse_review_builder", SKILLS / "vidmuse-style-c
 record_validator = load_module("validate_style_record", SKILLS / "vidmuse-style-record-production" / "scripts" / "validate_style_record.py")
 record_exporter = load_module("vidmuse_record_exporter", SKILLS / "vidmuse-style-record-production" / "scripts" / "export_records.py")
 preview_packager = load_module("vidmuse_preview_packager", SKILLS / "vidmuse-style-record-production" / "scripts" / "package_previews.py")
+url_backfiller = load_module("vidmuse_url_backfiller", SKILLS / "vidmuse-style-record-production" / "scripts" / "backfill_image_urls.py")
 
 
 class SkillSuiteTests(unittest.TestCase):
@@ -58,6 +61,12 @@ class SkillSuiteTests(unittest.TestCase):
                 "standards_manifest": None,
             })
             pipeline.command_init(args)
+            initialized = pipeline.load_manifest(run_dir)
+            self.assertEqual(2, initialized["schemaVersion"])
+            self.assertEqual(6, len(initialized["stages"]))
+            self.assertEqual("blocked", initialized["stages"]["url-backfill"]["status"])
+            self.assertTrue((run_dir / "05-preview-export" / "previews").is_dir())
+            self.assertFalse((run_dir / "06-url-backfill" / "previews").exists())
             source_dir = run_dir / "01-source-plan"
             (source_dir / "source-assessment.md").write_text("accepted source", encoding="utf-8")
             (source_dir / "collection-plan.json").write_text("{}", encoding="utf-8")
@@ -76,8 +85,54 @@ class SkillSuiteTests(unittest.TestCase):
             manifest = pipeline.load_manifest(run_dir)
             self.assertEqual("ready", manifest["stages"]["source-plan"]["status"])
             self.assertEqual("blocked", manifest["stages"]["evidence"]["status"])
+            self.assertEqual("blocked", manifest["stages"]["url-backfill"]["status"])
             self.assertTrue((source_dir / "source-assessment.md").exists())
             self.assertTrue(list((run_dir / "approvals").glob("*.json")))
+
+    def test_pipeline_migrates_legacy_five_stage_manifest(self) -> None:
+        with self.tempdir() as directory:
+            run_dir = Path(directory) / "run"
+            pipeline.command_init(type("Args", (), {
+                "run_dir": run_dir,
+                "name": "Legacy Run",
+                "source": ["legacy"],
+                "standards_manifest": None,
+            }))
+            manifest_path = run_dir / "run-manifest.json"
+            legacy = json.loads(manifest_path.read_text(encoding="utf-8"))
+            legacy["schemaVersion"] = 1
+            del legacy["stages"]["url-backfill"]
+            for definition in pipeline.STAGES[:-1]:
+                legacy["stages"][definition["id"]]["status"] = "approved"
+            manifest_path.write_text(json.dumps(legacy, indent=2) + "\n", encoding="utf-8")
+
+            migrated = pipeline.load_manifest(run_dir)
+            self.assertEqual(2, migrated["schemaVersion"])
+            self.assertEqual("ready", migrated["stages"]["url-backfill"]["status"])
+            self.assertEqual(
+                "stage_added_by_schema_upgrade",
+                migrated["stages"]["url-backfill"]["history"][0]["event"],
+            )
+            on_disk = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertEqual(1, on_disk["schemaVersion"])
+            self.assertNotIn("url-backfill", on_disk["stages"])
+
+            status_args = type("Args", (), {"run_dir": run_dir, "fail_on_incomplete": True})
+            with contextlib.redirect_stdout(io.StringIO()), self.assertRaises(pipeline.PipelineError):
+                pipeline.command_status(status_args)
+            migrated["stages"]["url-backfill"]["status"] = "approved"
+            pipeline.save_manifest(run_dir, migrated)
+            with contextlib.redirect_stdout(io.StringIO()):
+                pipeline.command_status(status_args)
+            persisted = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self.assertEqual(2, persisted["schemaVersion"])
+            self.assertIn("url-backfill", persisted["stages"])
+
+    def test_url_backfill_is_the_formal_sixth_stage(self) -> None:
+        definition = pipeline.STAGES[-1]
+        self.assertEqual("url-backfill", definition["id"])
+        self.assertEqual("06-url-backfill", definition["directory"])
+        self.assertIn("planner-image-url-map.json", definition["required"])
 
     def test_collection_plan_declares_independence_and_coverage(self) -> None:
         with self.tempdir() as directory:
@@ -335,6 +390,70 @@ class SkillSuiteTests(unittest.TestCase):
             self.assertEqual(1, result["styles"])
             self.assertEqual(1, result["images"])
 
+    def test_image_url_backfill_requires_exact_mapping_and_round_trip(self) -> None:
+        with self.tempdir() as directory:
+            base = Path(directory)
+            record = self.valid_record()
+            records = [record]
+            manifest = [{"styleIndex": "1", "name": record["name"], "fileName": "001__risograph-print__preview.png"}]
+            mapping = [{
+                "styleIndex": 1,
+                "name": record["name"],
+                "fileName": "001__risograph-print__preview.png",
+                "imageUrl": "https://cdn.example.test/workspace/assets/images/001__risograph-print__preview.png",
+            }]
+            normalized = url_backfiller.validate_mapping(records, manifest, mapping)
+            filled = url_backfiller.backfill_records(records, normalized)
+            self.assertEqual(mapping[0]["imageUrl"], filled[0]["imageUrl"])
+            validation = [{
+                "styleIndex": 1,
+                "fileName": mapping[0]["fileName"],
+                "imageUrl": mapping[0]["imageUrl"],
+                "httpStatus": 206,
+                "contentType": "image/png",
+                "signature": "png",
+                "valid": True,
+            }]
+            preview_dir = base / "05-preview-export"
+            backfill_dir = base / "06-url-backfill"
+            preview_dir.mkdir()
+            (preview_dir / "styles.json").write_text(json.dumps(records), encoding="utf-8")
+            with (preview_dir / "preview-manifest.csv").open("w", encoding="utf-8-sig", newline="") as handle:
+                writer = csv.DictWriter(handle, fieldnames=["styleIndex", "name", "fileName"])
+                writer.writeheader()
+                writer.writerow(manifest[0])
+            backfill_dir.mkdir()
+            (backfill_dir / "planner-image-url-map.json").write_text(json.dumps(mapping), encoding="utf-8")
+            url_backfiller.write_outputs(backfill_dir, filled, normalized, validation)
+            pipeline.validate_url_backfill_stage(base)
+            self.assertEqual(filled, json.loads((backfill_dir / "styles.json").read_text(encoding="utf-8")))
+            with (backfill_dir / "styles.csv").open("r", encoding="utf-8-sig", newline="") as handle:
+                csv_rows = list(csv.DictReader(handle))
+            self.assertEqual(mapping[0]["imageUrl"], csv_rows[0]["imageUrl"])
+
+            invalid_validation = json.loads(json.dumps(validation))
+            invalid_validation[0]["valid"] = False
+            (backfill_dir / "url-validation.json").write_text(json.dumps(invalid_validation), encoding="utf-8")
+            with self.assertRaises(pipeline.PipelineError):
+                pipeline.validate_url_backfill_stage(base)
+            (backfill_dir / "url-validation.json").write_text(json.dumps(validation), encoding="utf-8")
+
+            bad = json.loads(json.dumps(mapping))
+            bad[0]["name"] = "Wrong Style"
+            with self.assertRaises(url_backfiller.BackfillError):
+                url_backfiller.validate_mapping(records, manifest, bad)
+
+    def test_image_url_backfill_rejects_false_or_local_links(self) -> None:
+        record = self.valid_record()
+        manifest = [{"styleIndex": "1", "name": record["name"], "fileName": "001__risograph-print__preview.png"}]
+        for url in (
+            "https://cdn.example.test/workspace/assets/images/wrong.png",
+            "https://cdn.example.test/work/aion-runtime-v2-dev/001__risograph-print__preview.png",
+            "http://cdn.example.test/workspace/assets/images/001__risograph-print__preview.png",
+        ):
+            mapping = [{"styleIndex": 1, "name": record["name"], "fileName": manifest[0]["fileName"], "imageUrl": url}]
+            with self.assertRaises(url_backfiller.BackfillError):
+                url_backfiller.validate_mapping([record], manifest, mapping)
     def test_active_skill_links_schemas_and_metadata_are_self_contained(self) -> None:
         skill_dirs = [
             SKILLS / "vidmuse-style-pipeline",

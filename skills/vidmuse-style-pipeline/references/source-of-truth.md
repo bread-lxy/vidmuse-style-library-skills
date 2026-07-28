@@ -6,7 +6,7 @@ Use the first applicable source below. A lower tier cannot override a higher tie
 
 - `style-clustering-rules.zh-CN.md`: what counts as a style and how Anchor scope is chosen.
 - `style-library-field-standard.zh-CN.md`: what each production field means and how it is written.
-- Decision log D-024 to D-027: Anchor-first official candidates, model-agnostic six fields, human standard authority, and catalog-aware medium adaptation.
+- Decision log D-024 to D-028: Anchor-first official candidates, model-agnostic six fields, human standard authority, catalog-aware medium adaptation, and formal verified URL backfill.
 
 ## 2. Current Product Facts
 

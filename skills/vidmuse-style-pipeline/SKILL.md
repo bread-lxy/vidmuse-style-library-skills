@@ -1,6 +1,6 @@
 ---
 name: vidmuse-style-pipeline
-description: Orchestrate a complete, resumable VidMuse style-library production run from a new visual source through evidence normalization, live-catalog-aware Anchor concept review, six-field records, one reference image per style, and JSON/CSV delivery. Use when starting, resuming, auditing, or rerunning a multi-stage batch of official VidMuse style candidates. Keep human review lightweight but explicit at stage boundaries and never write the online admin.
+description: Orchestrate a complete, resumable VidMuse style-library production run from a new visual source through evidence normalization, live-catalog-aware Anchor concept review, six-field records, one reference image per style, and a verified imageUrl-complete JSON/CSV delivery. Use when starting, resuming, auditing, or rerunning a multi-stage batch of official VidMuse style candidates. Keep human review lightweight but explicit at stage boundaries and never write the online admin.
 ---
 
 # VidMuse Style Pipeline
@@ -42,8 +42,18 @@ Approval freezes hashes of all required artifacts. Do not silently regenerate an
 | `concept` | `vidmuse-style-concept-curation` | Live official-catalog comparison plus advance, merge, split, hold, or reject |
 | `records` | `vidmuse-style-record-production` | Six-field fidelity and neighbor separation |
 | `preview-export` | `vidmuse-style-record-production` | One final reference image per style and package integrity |
+| `url-backfill` | `vidmuse-style-record-production` | Exact record/image mapping, externally valid HTTPS URLs, and URL-complete package integrity |
 
 AI pre-populates the complete concept decision registry. The human reviews the batch and edits only exceptions; the stage approval records acceptance of all unedited AI proposals.
+
+## Finalize URL-Complete Delivery
+
+After `preview-export` approval, run `url-backfill` as the formal sixth stage.
+Call the upload and backfill flow in `vidmuse-style-record-production`, write
+its artifacts to `06-url-backfill/`, and obtain stage approval after every URL
+and JSON/CSV output passes validation. Preserve the approved
+`05-preview-export/` package unchanged; the sixth stage derives from it rather
+than replacing it.
 
 ## Reopen Safely
 
@@ -60,11 +70,18 @@ This marks the stage and all downstream approvals stale. It preserves every arti
 - Keep research evidence separate from generated previews and production output.
 - Keep source metadata out of visual membership features and production prompts.
 - Capture the official catalog from the environment selected for the run before the first source-plan review, and verify that the config endpoint matches that selection. Treat this first snapshot as report-only context that cannot steer collection. Refresh it during concept review for current duplicate checks and a nonbinding candidate-mix recommendation. Static admin snapshots are field-shape fallback only.
-- Stop at six-field JSON/CSV plus the preview-image package. Leave `imageUrl` empty.
-- Do not upload assets, backfill URLs, call the admin create API, or modify the plugin.
+- Keep `imageUrl` empty in the approved `preview-export` staging package. The formal `url-backfill` stage then uploads only those approved final previews and produces the URL-complete delivery.
+- Run URL backfill against the VidMuse dev environment with the `Evals-bread-img` plugin. Preserve the approved preview-export package, verify every final HTTPS image URL independently, and write the sixth-stage delivery separately.
+- Do not call the admin create API or modify the plugin.
 - Treat bundled standards as authoritative in the order documented in `source-of-truth.md`.
 - If standards drift, stop and report the changed source before continuing.
 
 ## Completion
 
-Finish only when all five stages are approved, `status` reports no artifact drift, all staging records pass strict validation, JSON/CSV round-trip, and every style has exactly one correctly named final reference image.
+The run is complete only when all six stages are approved, `status` reports no
+artifact drift, all staging records pass strict validation, JSON/CSV
+round-trip, and every style has exactly one correctly named final reference
+image. The final stage additionally requires exact
+record/manifest/URL-map alignment, successful external network validation for
+every image, production validation of the URL-complete records, and
+URL-complete JSON/CSV round-trip in `06-url-backfill/`.

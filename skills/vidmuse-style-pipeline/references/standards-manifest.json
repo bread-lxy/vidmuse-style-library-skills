@@ -1,55 +1,135 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-27T09:21:44Z",
-  "scope": "self-contained-skill-bundle",
+  "generatedAt": "2026-07-28T03:44:09Z",
+  "workspaceRoot": "C:\\Users\\lixue\\Desktop\\实习\\sand ai\\feature",
   "entries": [
     {
       "id": "clustering-rules",
-      "path": "vidmuse-style-concept-curation/references/style-clustering-rules.zh-CN.md",
-      "sha256": "2e9dd2cc9816d78c9df735d6d2a587155fdf8dd0c55f54ac03ae69dcd55d80ca",
-      "bytes": 11386
+      "authority": "human",
+      "sourcePath": "docs/style-clustering-rules.zh-CN.md",
+      "bundlePath": "vidmuse-style-concept-curation/references/style-clustering-rules.zh-CN.md",
+      "sourceSha256": "2e9dd2cc9816d78c9df735d6d2a587155fdf8dd0c55f54ac03ae69dcd55d80ca",
+      "sourceBytes": 11386,
+      "bundleSha256": "2e9dd2cc9816d78c9df735d6d2a587155fdf8dd0c55f54ac03ae69dcd55d80ca",
+      "bundleBytes": 11386
     },
     {
       "id": "field-standard",
-      "path": "vidmuse-style-record-production/references/style-library-field-standard.zh-CN.md",
-      "sha256": "3100a0a8e1dbf7799d5927278df00db79ac4f63b8185946aaabd2933cb8f2261",
-      "bytes": 27231
+      "authority": "human",
+      "sourcePath": "docs/style-library-field-standard.zh-CN.md",
+      "bundlePath": "vidmuse-style-record-production/references/style-library-field-standard.zh-CN.md",
+      "derived": true,
+      "transform": "Rebased internal links for the self-contained Skill bundle; content semantics unchanged.",
+      "sourceSha256": "de01808710508e276cbfe338f6895d88aec39cd63e2dbd9242561238f539849d",
+      "sourceBytes": 27741,
+      "bundleSha256": "3100a0a8e1dbf7799d5927278df00db79ac4f63b8185946aaabd2933cb8f2261",
+      "bundleBytes": 27231
     },
     {
       "id": "decision-log",
-      "path": "vidmuse-style-pipeline/references/decision-log.md",
-      "sha256": "0a8a237770efec449351e65d28fa42b3160cbe264ca406536dcc0821975b2a93",
-      "bytes": 17540
+      "authority": "human",
+      "sourcePath": "decisions/decision-log.md",
+      "bundlePath": "vidmuse-style-pipeline/references/decision-log.md",
+      "sections": [
+        "D-024",
+        "D-025",
+        "D-026",
+        "D-027",
+        "D-028"
+      ],
+      "derived": true,
+      "transform": "Rebased the active clustering-rules link for the installed sibling Skill; decision text unchanged.",
+      "sourceSha256": "f2afab381763ef0a3bdecefacb672ab27d90b5ad5dba88d11ca1f7a53f76f07b",
+      "sourceBytes": 18793,
+      "bundleSha256": "8c366a8232f40fbd752c90f9957563fcda6f998ad95759943c63de1c56b0552c",
+      "bundleBytes": 19044
+    },
+    {
+      "id": "admin-snapshot",
+      "authority": "product_fact",
+      "sourcePath": "官方风格库管理 - Vidmuse Admin.html",
+      "sourceSha256": "18624bc466dddef28215f35f1da49af895dfb7f10d06f6d23e4f10040703d6b7",
+      "sourceBytes": 230046
+    },
+    {
+      "id": "plugin-style-selector",
+      "authority": "product_fact",
+      "sourcePath": "vidmuse-plugins/general-bj-en-test-b-0707/skills/select-visual-style/SKILL.md",
+      "sourceSha256": "18e6ff5d8edd784b7a8efda054d8741d8c6aa77b55a84c4815b4f1b18c4efe90",
+      "sourceBytes": 22535
+    },
+    {
+      "id": "plugin-t2i-compiler",
+      "authority": "product_fact",
+      "sourcePath": "vidmuse-plugins/general-bj-en-test-b-0707/skills/compile-prompt/references/modality-t2i.md",
+      "sourceSha256": "8d7dea61ef9c8c2c7aa05134028d56e89df92af132f206aa0f0ffd1fcca3675a",
+      "sourceBytes": 8874
+    },
+    {
+      "id": "plugin-t2v-compiler",
+      "authority": "product_fact",
+      "sourcePath": "vidmuse-plugins/general-bj-en-test-b-0707/skills/compile-prompt/references/modality-t2v.md",
+      "sourceSha256": "2e2b3fb6c48f52d04ee86e7c520f2628faae9ae8f4cb524fd540e3302517567a",
+      "sourceBytes": 8128
     },
     {
       "id": "style-record-schema",
-      "path": "vidmuse-style-record-production/references/style-record.schema.json",
-      "sha256": "413e52098003788cf17dfd2a264a2628cff5529db8e4a08152f4b9c93bea7bba",
-      "bytes": 2174
+      "authority": "machine_reference",
+      "sourcePath": "style-library-schema-taxonomy/style-record.schema.json",
+      "bundlePath": "vidmuse-style-record-production/references/style-record.schema.json",
+      "sourceSha256": "413e52098003788cf17dfd2a264a2628cff5529db8e4a08152f4b9c93bea7bba",
+      "sourceBytes": 2174,
+      "bundleSha256": "413e52098003788cf17dfd2a264a2628cff5529db8e4a08152f4b9c93bea7bba",
+      "bundleBytes": 2174
     },
     {
       "id": "style-record-validator",
-      "path": "vidmuse-style-record-production/scripts/validate_style_record.py",
-      "sha256": "02c51211ef933640060d1b10ec2389d9e19a51b8c14d9cc8eb7b06f8aa95ccec",
-      "bytes": 20935
+      "authority": "machine_reference",
+      "sourcePath": "style-library-schema-taxonomy/validate_style_record.py",
+      "bundlePath": "vidmuse-style-record-production/scripts/validate_style_record.py",
+      "derived": true,
+      "sourceSha256": "b9b6e4f3d2a53ba008d54ca3b72c8c582e15f3ab7df1eb71a75eb1e29107ec77",
+      "sourceBytes": 20073,
+      "bundleSha256": "02c51211ef933640060d1b10ec2389d9e19a51b8c14d9cc8eb7b06f8aa95ccec",
+      "bundleBytes": 20935
     },
     {
       "id": "style-taxonomy",
-      "path": "vidmuse-style-record-production/references/style-library-taxonomy.json",
-      "sha256": "428a9ea165eb8ba00c895e8fa909e79dcf9aeaae29fbd91881effb2b7dfd8ced",
-      "bytes": 7244
+      "authority": "machine_reference",
+      "sourcePath": "style-library-schema-taxonomy/style-library-taxonomy.json",
+      "bundlePath": "vidmuse-style-record-production/references/style-library-taxonomy.json",
+      "derived": true,
+      "transform": "Rebased internal links for the self-contained Skill bundle; content semantics unchanged.",
+      "sourceSha256": "f8624e6baa03fa0c5e875fe9af70eb101c70fac58736fd826240bb680d1c8e7d",
+      "sourceBytes": 7369,
+      "bundleSha256": "428a9ea165eb8ba00c895e8fa909e79dcf9aeaae29fbd91881effb2b7dfd8ced",
+      "bundleBytes": 7244
     },
     {
       "id": "boundary-fixtures",
-      "path": "vidmuse-style-concept-curation/references/boundary-fixtures.yaml",
-      "sha256": "f1e529549599591f6a8e5ee1db0d4078754a0ef53945003c886e2c1c6c2cd5ed",
-      "bytes": 1557
+      "authority": "regression_evidence",
+      "sourcePath": "evaluation/boundary-fixtures.yaml",
+      "bundlePath": "vidmuse-style-concept-curation/references/boundary-fixtures.yaml",
+      "sourceSha256": "f1e529549599591f6a8e5ee1db0d4078754a0ef53945003c886e2c1c6c2cd5ed",
+      "sourceBytes": 1557,
+      "bundleSha256": "f1e529549599591f6a8e5ee1db0d4078754a0ef53945003c886e2c1c6c2cd5ed",
+      "bundleBytes": 1557
     },
     {
       "id": "duplicate-review",
-      "path": "vidmuse-style-concept-curation/references/duplicate-high-affinity-review.zh-CN.md",
-      "sha256": "555cedfaead8d1e99ec766af3393b59c4c2cccdd4b32fd155c273bf6eb313af6",
-      "bytes": 22315
+      "authority": "execution_evidence",
+      "sourcePath": "docs/style-library-duplicate-high-affinity-retention-review.zh-CN.md",
+      "bundlePath": "vidmuse-style-concept-curation/references/duplicate-high-affinity-review.zh-CN.md",
+      "sourceSha256": "555cedfaead8d1e99ec766af3393b59c4c2cccdd4b32fd155c273bf6eb313af6",
+      "sourceBytes": 22315,
+      "bundleSha256": "555cedfaead8d1e99ec766af3393b59c4c2cccdd4b32fd155c273bf6eb313af6",
+      "bundleBytes": 22315
     }
+  ],
+  "historicalExclusions": [
+    "first-stage 284 field-shape candidates",
+    "Phase 2 six legacy examples",
+    "model filler and fixed aspect-ratio prompt rules",
+    "Midterm text conflicting with the current human standard"
   ]
 }
