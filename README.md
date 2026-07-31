@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> 本仓库已迁移至 [world-sim-dev/Style-batch-production-skills](https://github.com/world-sim-dev/Style-batch-production-skills)。此个人副本不再维护，请前往公司仓库获取后续更新。
+
 # VidMuse 风格库批量生产 Skills
 
 这是一套面向 AI Agent 的可复用 Skill，用于把公开网站、数据集或本地视觉素材，逐步整理成 VidMuse 后台风格库标准风格记录。
